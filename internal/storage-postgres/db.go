@@ -2,7 +2,7 @@ package storagePostgres
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 
 	"gorm.io/gorm"
 
@@ -17,7 +17,7 @@ type DBConfig struct {
 	DBName   string
 }
 
-func InitDB(config DBConfig) (*gorm.DB, error) {
+func InitDB(config DBConfig, logger *slog.Logger) (*gorm.DB, error) {
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		config.Host, config.Port, config.User, config.Password, config.DBName)
 
@@ -28,6 +28,6 @@ func InitDB(config DBConfig) (*gorm.DB, error) {
 
 	db.AutoMigrate(&UserModel{})
 
-	log.Println("Successfully connected to the database")
+	logger.Info("Successfully connected to the database")
 	return db, nil
 }

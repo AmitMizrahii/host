@@ -14,7 +14,8 @@ import (
 )
 
 func main() {
-	logger := slog.Default()
+	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+
 	slog.SetDefault(logger)
 
 	config := utils.ParseConfig(map[string]string{
@@ -28,7 +29,7 @@ func main() {
 
 	dbPort, err := strconv.Atoi(*config["DB_PORT"])
 	if err != nil {
-		logger.Error("Error parsing DB_PORT to int")
+		logger.Error("Error parsing DB_PORT to int", "DB_PORT", *config["DB_PORT"])
 		os.Exit(1)
 	}
 
@@ -40,9 +41,9 @@ func main() {
 		DBName:   *config["DB_NAME"],
 	}
 
-	db, err := storagePostgres.InitDB(dbConfig)
+	db, err := storagePostgres.InitDB(dbConfig, logger)
 	if err != nil {
-		logger.Error("Failed to connect to database:", err)
+		logger.Error("Failed to connect to database:", "error", err)
 		os.Exit(1)
 	}
 
@@ -53,8 +54,8 @@ func main() {
 	port := config["PORT"]
 	server := api.NewServer(*port, *controller)
 
-	if err := server.Init(); err != nil {
-		logger.Error("Failed to start server:", err)
+	if err := server.Init(logger); err != nil {
+		logger.Error("Failed to start server:", "error", err)
 		os.Exit(1)
 	}
 }

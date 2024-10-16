@@ -18,7 +18,7 @@ func NewServer(port string, userController controllers.UserController) *Server {
 	return &Server{port: port, userController: userController}
 }
 
-func (s *Server) Init() (err error) {
+func (s *Server) Init(logger *slog.Logger) (err error) {
 	r := mux.NewRouter()
 
 	s.userController.InitRoutes(r)
@@ -30,7 +30,7 @@ func (s *Server) Init() (err error) {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	slog.Info("Server is running on port" + s.port)
+	logger.Info("Server is running", "port", s.port)
 
 	return srv.ListenAndServe()
 }
