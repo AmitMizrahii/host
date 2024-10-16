@@ -1,9 +1,10 @@
-package dal
+package storagePostgres
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"log"
+
+	"gorm.io/gorm"
 
 	"gorm.io/driver/postgres"
 )

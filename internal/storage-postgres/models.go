@@ -1,4 +1,4 @@
-package dal
+package storagePostgres
 
 type UserModel struct {
 	ID      uint   `json:"id" gorm:"primaryKey"`
